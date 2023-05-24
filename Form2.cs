@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace DNAcounter
 {
@@ -29,7 +30,40 @@ namespace DNAcounter
 
         private void Zapis_Click(object sender, EventArgs e)
         {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "CSV files (*.csv)|*.csv";
+            saveFileDialog.Title = "Save CSV file";
 
+            DialogResult result = saveFileDialog.ShowDialog();
+            if(result == DialogResult.OK)
+            {
+                string filePath = saveFileDialog.FileName;
+                
+                StringBuilder sb = new StringBuilder();
+
+                foreach(ColumnHeader column in listView1.Columns)
+                {
+                    
+                 sb.Append(column.Text);
+                 sb.Append(",");
+
+                    
+                }
+                sb.AppendLine();
+
+                foreach (ListViewItem item in listView1.Items)
+                {
+                    foreach (ListViewItem.ListViewSubItem subItem in item.SubItems)
+                    {
+                        sb.Append(subItem.Text);
+                        sb.Append(",");
+                    }
+                    sb.AppendLine();
+                }
+
+
+                File.WriteAllText(filePath, sb.ToString());
+            }
         }
 
         private void Form2_Load(object sender, EventArgs e)
@@ -45,11 +79,11 @@ namespace DNAcounter
 
             foreach(var duplicate in duplicates)
             {
-                MessageBox.Show("Element: " + duplicate.value + ",  Count: " + duplicate.Count);
+                
                 listView1.Items.Add(duplicate.value + " " + duplicate.Count);
             }
 
-            //string baza = "1";
+            
 
             foreach(var x in oligo)
             {
@@ -63,27 +97,7 @@ namespace DNAcounter
 
 
 
-            /*
-            Array.Fill(ile, 1);
-
-            for (int i=0; i<oligo.Length; i++)
-            {
-                for(int j=0; j<oligo[i].Length; j++)
-                {
-                    if (i !=j && oligo[i] == oligo[j])
-                    {
-                        ile[i]++;
-                    }
-                }
-            }
-
-            for(int i=0; i<oligo.Length; i++)
-            {
-                MessageBox.Show(oligo[i]);
-                MessageBox.Show(ile[i].ToString());
-            }
-            */
-
+            
 
         }
     }
